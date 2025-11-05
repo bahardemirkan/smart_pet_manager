@@ -1,0 +1,17 @@
+# Flutter
+.dart_tool/
+.packages
+build/
+ios/Pods/
+macos/Pods/
+*.flutter-plugins
+*.flutter-plugins-dependencies
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# IDE
+.vscode/
+.idea/
+
+# Platform temp
+pubspec.lock
