@@ -141,7 +141,7 @@ class _PetHomePageState extends State<PetHomePage> {
       Dog(name: "Mina", age: 4, breed: "Golden Retriever", imageAsset: 'assets/images/dog.png'),
       Cat.kitten("Eva", imageAsset: 'assets/images/eva.png'),
       Bird.parrot("Necmi", color: "Blue & White", imageAsset: 'assets/images/necmi.png'),
-      Dog.rescue("sherlock", imageAsset: 'assets/images/köpke2.png'),
+      Dog.rescue("Sherlock", imageAsset: 'assets/images/köpke2.png'),
       Dog(name:"Mühendis", age: 4, imageAsset: "assets/images/çalışkanKöpek.jpeg"),
       Cat(name: "Doktor", age: 3, imageAsset: 'assets/images/doktorKedi.jpeg'),
       Bird(name:"Çavuş", age: 3, imageAsset: "assets/images/bordoBereli.jpeg"),
