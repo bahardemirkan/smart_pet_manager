@@ -9,6 +9,25 @@ void main() {
   runApp(const SmartPetManagerApp());
 }
 
+abstract class SoundBehavior {
+  String makeNoise();
+}
+
+class BarkSound implements SoundBehavior {
+  @override
+  String makeNoise() => "Woof!";
+}
+
+class MeowSound implements SoundBehavior {
+  @override
+  String makeNoise() => "Meow~";
+}
+
+class ChirpSound implements SoundBehavior {
+  @override
+  String makeNoise() => "Chirp! Chirp!";
+}
+
 abstract class Friendly {
   String beFriendly();
 }
@@ -23,20 +42,34 @@ abstract class Pet {
   final String name;
   final int age;
   final String species;
-  final String? imageAsset; 
+  final String? imageAsset;
 
-  Pet({required this.name, required this.age, required this.species, this.imageAsset}) {
+  final SoundBehavior soundBehavior;
+
+  Pet({
+    required this.name,
+    required this.age,
+    required this.species,
+    this.imageAsset,
+    required this.soundBehavior,
+  }) {
     Pet.totalPets++;
   }
 
-  Pet.young({required String name, required String species, this.imageAsset})
-      : name = name,
+  Pet.young({
+    required String name,
+    required String species,
+    this.imageAsset,
+    required this.soundBehavior,
+  })  : name = name,
         age = 1,
         species = species {
     Pet.totalPets++;
   }
 
-  String makeSound();
+  String makeSound() {
+    return soundBehavior.makeNoise();
+  }
 
   String info() => "${this.name} is a ${this.species} aged ${this.age}";
 }
@@ -45,14 +78,23 @@ class Dog extends Pet implements Friendly {
   final String breed;
 
   Dog({required String name, required int age, this.breed = "Mixed", String? imageAsset})
-      : super(name: name, age: age, species: "Dog", imageAsset: imageAsset);
+      : super(
+    name: name,
+    age: age,
+    species: "Dog",
+    imageAsset: imageAsset,
+    soundBehavior: BarkSound(),
+  );
 
   Dog.rescue(String name, {String? imageAsset})
       : breed = "Rescue",
-        super(name: name, age: 2, species: "Dog", imageAsset: imageAsset);
-
-  @override
-  String makeSound() => "Woof!";
+        super(
+        name: name,
+        age: 2,
+        species: "Dog",
+        imageAsset: imageAsset,
+        soundBehavior: BarkSound(),
+      );
 
   @override
   String beFriendly() => "Wags tail and brings a toy.";
@@ -64,14 +106,22 @@ class Cat extends Pet implements Friendly {
   final bool indoor;
 
   Cat({required String name, required int age, this.indoor = true, String? imageAsset})
-      : super(name: name, age: age, species: "Cat", imageAsset: imageAsset);
+      : super(
+    name: name,
+    age: age,
+    species: "Cat",
+    imageAsset: imageAsset,
+    soundBehavior: MeowSound(),
+  );
 
   Cat.kitten(String name, {bool indoor = true, String? imageAsset})
       : indoor = indoor,
-        super(name: name, age: 1, species: "Cat", imageAsset: imageAsset);
-
-  @override
-  String makeSound() => "Meow~";
+        super.young(
+        name: name,
+        species: "Cat",
+        imageAsset: imageAsset,
+        soundBehavior: MeowSound(),
+      );
 
   @override
   String beFriendly() => "Purrs and rubs against your leg.";
@@ -83,14 +133,23 @@ class Bird extends Pet with Flyable implements Friendly {
   final String color;
 
   Bird({required String name, required int age, this.color = "Green", String? imageAsset})
-      : super(name: name, age: age, species: "Bird", imageAsset: imageAsset);
+      : super(
+    name: name,
+    age: age,
+    species: "Bird",
+    imageAsset: imageAsset,
+    soundBehavior: ChirpSound(),
+  );
 
   Bird.parrot(String name, {String color = "Multi", String? imageAsset})
       : color = color,
-        super(name: name, age: 3, species: "Bird", imageAsset: imageAsset);
-
-  @override
-  String makeSound() => "Chirp! Chirp!";
+        super(
+        name: name,
+        age: 3,
+        species: "Bird",
+        imageAsset: imageAsset,
+        soundBehavior: ChirpSound(),
+      );
 
   @override
   String beFriendly() => "Sits on your shoulder and whistles.";
@@ -115,10 +174,6 @@ class SmartPetManagerApp extends StatelessWidget {
   }
 }
 
-// ---------------------------------------------------
-// DEĞİŞİKLİKLER BU SINIFTA BAŞLIYOR
-// ---------------------------------------------------
-
 class PetHomePage extends StatefulWidget {
   const PetHomePage({super.key});
 
@@ -132,10 +187,8 @@ class _PetHomePageState extends State<PetHomePage> {
   @override
   void initState() {
     super.initState();
-    
-    // `Pet.totalPets`'in her "hot reload"da artmasını önlemek için 
-    // sayaç burada sıfırlanır ve liste yeniden oluşturulur.
-    Pet.totalPets = 0; 
+
+    Pet.totalPets = 0;
 
     pets = [
       Dog(name: "Mina", age: 4, breed: "Golden Retriever", imageAsset: 'assets/images/dog.png'),
@@ -149,61 +202,50 @@ class _PetHomePageState extends State<PetHomePage> {
       Cat(name: "Şaşkaloz", age: 6, imageAsset: "assets/images/şaşkınKedi.jpeg"),
       Dog(name: "Turist Köpekler", age: 4,imageAsset: "assets/images/TuristKöpekler.jpeg"),
       Cat(name: "Kriptonlu", age: 1789, imageAsset: "assets/images/uzaylıKedi.jpeg")
-
     ];
   }
 
   @override
   Widget build(BuildContext context) {
-    // Evcil hayvanları türlerine göre filtreliyoruz
     final dogs = pets.whereType<Dog>().toList();
     final cats = pets.whereType<Cat>().toList();
     final birds = pets.whereType<Bird>().toList();
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar(leading: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Image.asset(
+          'assets/images/pet_logo.png',
+        ),
+      ),
         title: const Text('Smart Pet Manager'),
       ),
       body: Column(
         children: [
           Expanded(
-            // Orijinal ListView.separated yerine ExpansionTile'ları
-            // tutan bir ListView kullanıyoruz.
             child: ListView(
               padding: const EdgeInsets.all(12),
               children: [
-
-                // 1. Köpekler Bölümü (İsteğinize göre)
                 _buildPetExpansionTile(
                   title: 'Köpekler',
                   icon: FontAwesomeIcons.dog,
                   pets: dogs,
                 ),
-                
-                const SizedBox(height: 10), // Bölümler arasına boşluk
-
-                // 2. Kuşlar Bölümü (İsteğinize göre)
+                const SizedBox(height: 10),
                 _buildPetExpansionTile(
                   title: 'Kuşlar',
                   icon: FontAwesomeIcons.dove,
                   pets: birds,
                 ),
-
-                const SizedBox(height: 10), // Bölümler arasına boşluk
-                
-                // 3. Kediler Bölümü (İsteğinize göre)
+                const SizedBox(height: 10),
                 _buildPetExpansionTile(
                   title: 'Kediler',
                   icon: FontAwesomeIcons.cat,
                   pets: cats,
                 ),
-
-
               ],
             ),
           ),
-          
-          // --- Alt Toplam Bilgisi (Aynı kalıyor) ---
           SafeArea(
             top: false,
             child: Container(
@@ -222,33 +264,27 @@ class _PetHomePageState extends State<PetHomePage> {
     );
   }
 
-  // ExpansionTile (Akordiyon) widget'ı oluşturmak için yardımcı bir metot
   Widget _buildPetExpansionTile({
     required String title,
     required IconData icon,
     required List<Pet> pets,
   }) {
-    // Eğer o türde hayvan yoksa, o bölümü hiç gösterme
     if (pets.isEmpty) {
       return const SizedBox.shrink();
     }
 
     return Card(
-      elevation: 2, // Hafif bir gölge
+      elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      clipBehavior: Clip.antiAlias, // Card'ın köşelerini içeriğe uygulamak için
+      clipBehavior: Clip.antiAlias,
       child: ExpansionTile(
-        // Başlangıçta kapalı olması için
         initiallyExpanded: false,
         leading: Icon(icon, color: Theme.of(context).colorScheme.primary),
         title: Text(
-          '$title (${pets.length})', // Başlıkta o türden kaç hayvan olduğunu da yazalım
+          '$title (${pets.length})',
           style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 17),
         ),
-        
-        // Açılınca gösterilecek widget listesi (PetCard'lar)
         children: pets.map((pet) {
-          // Kartların kenarlardan biraz içeride olması için Padding ekliyoruz
           return Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
             child: PetCard(pet: pet),
@@ -258,13 +294,6 @@ class _PetHomePageState extends State<PetHomePage> {
     );
   }
 }
-
-// ---------------------------------------------------
-// DEĞİŞİKLİKLER BURADA BİTİYOR
-// ---------------------------------------------------
-
-
-// ... (Diğer sınıflar aynı) ...
 
 class PetCard extends StatelessWidget {
   final Pet pet;
@@ -289,12 +318,9 @@ class PetCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          // 1. DEĞİŞİKLİK: Tüm çocukları (Row, Image, Text) yatayda ortala
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Row(
-              // 2. DEĞİŞİKLİK: Row'un genişliğini minimuma indir ki
-              // Column onu bir bütün olarak ortalayabilsin.
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(_iconFor(pet), size: 28, color: theme.colorScheme.primary),
@@ -307,26 +333,26 @@ class PetCard extends StatelessWidget {
             ),
             if (pet.imageAsset != null) ...[
               const SizedBox(height: 10),
-              Center( // Resim zaten Center içindeydi, bu ayarda da düzgün çalışır
+              Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.asset(
                     pet.imageAsset!,
-                    height: 200, 
-                    width: 200,  
+                    height: 200,
+                    width: 200,
                     fit: BoxFit.contain,
                   ),
                 ),
               ),
             ],
             const SizedBox(height: 8),
-            Text(pet.info()), // Bu artık ortalanacak
+            Text(pet.info()),
             const SizedBox(height: 8),
-            Text('Sound: ${pet.makeSound()}'), // Bu artık ortalanacak
+            Text('Sound: ${pet.makeSound()}'),
             const SizedBox(height: 8),
-            Text('Special: ${specialBehavior(pet)}'), // Bu artık ortalanacak
+            Text('Special: ${specialBehavior(pet)}'),
             const SizedBox(height: 8),
-            Text('Friendly: ${friendlyAction(pet)}'), // Bu artık ortalanacak
+            Text('Friendly: ${friendlyAction(pet)}'),
           ],
         ),
       ),
