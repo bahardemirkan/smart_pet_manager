@@ -253,13 +253,13 @@ class _PetHomePageState extends State<PetHomePage> {
       Cat(
         name: "Shocked",
         age: 6,
-        imageAsset: "assets/images/şaşkınKedi.jpeg",
+        imageAsset: "assets/images/saskinKedi.jpeg",
         
       ),
       Dog(
         name: "Tourist Dogs",
         age: 4,
-        imageAsset: "assets/images/TuristKöpekler.jpeg",
+        imageAsset: "assets/images/TuristKopekler.jpeg",
         customSpecial: "Tourist dogs is taking a selfie.",
       ),
       Cat(
@@ -268,7 +268,7 @@ class _PetHomePageState extends State<PetHomePage> {
         imageAsset: "assets/images/uzaylıKedi.jpeg",
         customSound: "Zorp~",
         customFriendly: "Telepathically projects friendship.",
-        customSpecial: "Kriptonlu is levitating.",
+        customSpecial: "Kryptonian is levitating.",
       )
     ];
   }
