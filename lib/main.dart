@@ -1,10 +1,18 @@
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main() {
   runApp(const SmartPetManagerApp());
 }
+
+abstract class Friendly {
+  String beFriendly();
+}
+
+mixin Flyable {
+  String fly() => "I am flying!";
+}
+
 abstract class Pet {
   static int totalPets = 0;
 
@@ -12,19 +20,12 @@ abstract class Pet {
   final int age;
   final String species;
   final String? imageAsset;
-  final String sound;
-  final String friendlyBehavior;
-  final String specialAction;
-
 
   Pet({
     required this.name,
     required this.age,
     required this.species,
     this.imageAsset,
-    required this.sound,
-    required this.friendlyBehavior,
-    required this.specialAction,
   }) {
     Pet.totalPets++;
   }
@@ -33,20 +34,24 @@ abstract class Pet {
     required String name,
     required String species,
     this.imageAsset,
-    required this.sound,
-    required this.friendlyBehavior,
-    required this.specialAction,
   })  : name = name,
         age = 1,
         species = species {
     Pet.totalPets++;
   }
 
-  String info() => "${this.name} is a ${this.species} aged ${this.age}";
+  String makeSound();
+  String doSpecialAction();
+  String beFriendly();
+
+  String info() => "$name is a $species aged $age";
 }
 
-class Dog extends Pet {
+class Dog extends Pet implements Friendly {
   final String breed;
+  final String _sound;
+  final String _friendly;
+  final String _special;
 
   Dog({
     required String name,
@@ -56,110 +61,110 @@ class Dog extends Pet {
     String? customSound,
     String? customFriendly,
     String? customSpecial,
-  }) : super(
-          name: name,
-          age: age,
-          species: "Dog",
-          imageAsset: imageAsset,
-          sound: customSound ?? "Woof!",
-          friendlyBehavior: customFriendly ?? "Wags tail and brings a toy.",
-          specialAction: customSpecial ?? "$name is fetching the ball!",
-        );
+  })  : _sound = customSound ?? "Woof!",
+        _friendly = customFriendly ?? "Wags tail and brings a toy.",
+        _special = customSpecial ?? "$name is fetching the ball!",
+        super(name: name, age: age, species: "Dog", imageAsset: imageAsset);
 
   Dog.rescue(
-    String name, {
-    String? imageAsset,
-    String? customSpecial,
-  })  : breed = "Rescue",
-        super(
-          name: name,
-          age: 2,
-          species: "Dog",
-          imageAsset: imageAsset,
-          
-          sound: "Woof! (Rescued!)",
-          friendlyBehavior: "Rubs thankfully against your leg.",
-          specialAction: customSpecial ?? "$name is happy to be safe!",
-        );
+      String name, {
+        String? imageAsset,
+        String? customSpecial,
+      })  : breed = "Rescue",
+        _sound = "Woof! (Rescued!)",
+        _friendly = "Rubs thankfully against your leg.",
+        _special = customSpecial ?? "$name is happy to be safe!",
+        super(name: name, age: 2, species: "Dog", imageAsset: imageAsset);
+
+  @override
+  String makeSound() => _sound;
+
+  @override
+  String doSpecialAction() => _special;
+
+  @override
+  String beFriendly() => _friendly;
 }
 
-class Cat extends Pet {
+class Cat extends Pet implements Friendly {
   final bool indoor;
+  final String _sound;
+  final String _friendly;
+  final String _special;
 
   Cat({
     required String name,
     required int age,
-    this.indoor = true, 
+    this.indoor = true,
     String? imageAsset,
     String? customSound,
     String? customFriendly,
     String? customSpecial,
-  }) : 
-        super(
-          name: name,
-          age: age,
-          species: "Cat",
-          imageAsset: imageAsset,
-          sound: customSound ?? "Meow~",
-          friendlyBehavior: customFriendly ?? "Purrs and rubs against your leg.",
-          specialAction: customSpecial ?? "$name is scratching the post.",
-        );
+  })  : _sound = customSound ?? "Meow~",
+        _friendly = customFriendly ?? "Purrs and rubs against your leg.",
+        _special = customSpecial ?? "$name is scratching the post.",
+        super(name: name, age: age, species: "Cat", imageAsset: imageAsset);
 
   Cat.kitten({
     required String name,
-    this.indoor = true, 
+    this.indoor = true,
     String? imageAsset,
     String? customSpecial,
-  }) : 
-        super.young(
-          name: name,
-          species: "Cat",
-          imageAsset: imageAsset,
-          sound: "Mew!",
-          friendlyBehavior: "Plays with a string.",
-          specialAction: customSpecial ?? "$name is chasing a toy mouse.",
-        );
+  })  : _sound = "Mew!",
+        _friendly = "Plays with a string.",
+        _special = customSpecial ?? "$name is chasing a toy mouse.",
+        super.young(name: name, species: "Cat", imageAsset: imageAsset);
+
+  @override
+  String makeSound() => _sound;
+
+  @override
+  String doSpecialAction() => _special;
+
+  @override
+  String beFriendly() => _friendly;
 }
 
-
-class Bird extends Pet {
+class Bird extends Pet with Flyable implements Friendly {
   final String color;
+  final String _sound;
+  final String _friendly;
+  final String _special;
 
   Bird({
     required String name,
     required int age,
-    this.color = "Green", 
+    this.color = "Green",
     String? imageAsset,
     String? customSound,
     String? customFriendly,
     String? customSpecial,
-  }) : 
-        super(
-          name: name,
-          age: age,
-          species: "Bird",
-          imageAsset: imageAsset,
-          sound: customSound ?? "Chirp! Chirp!",
-          friendlyBehavior:
-              customFriendly ?? "Sits on your shoulder and whistles.",
-          specialAction: customSpecial ?? "I can fly high in the sky!",
-        );
+  })  : _sound = customSound ?? "Chirp! Chirp!",
+        _friendly = customFriendly ?? "Sits on your shoulder and whistles.",
+        _special = customSpecial ?? "I can fly high in the sky!",
+        super(name: name, age: age, species: "Bird", imageAsset: imageAsset);
 
   Bird.parrot({
-    required String name, 
-    this.color = "Multi",  
+    required String name,
+    this.color = "Multi",
     String? imageAsset,
     String? customSpecial,
-  }) : 
-        super(
-          name: name,
-          age: 3,
-          species: "Bird",
-          imageAsset: imageAsset,
-          sound: "Polly wants a cracker!",
-          friendlyBehavior: "Mimics your voice.",
-          specialAction: customSpecial ?? "$name is talking!",
-        );
+  })  : _sound = "Polly wants a cracker!",
+        _friendly = "Mimics your voice.",
+        _special = customSpecial ?? "$name is talking!",
+        super(name: name, age: 3, species: "Bird", imageAsset: imageAsset);
+
+  @override
+  String makeSound() => _sound;
+
+  @override
+  String doSpecialAction() => _special;
+
+  @override
+  String beFriendly() => _friendly;
+
+  // mixin'den gelen örnek kullanım
+  String patrol() => fly();
 }
 
 class SmartPetManagerApp extends StatelessWidget {
@@ -178,6 +183,7 @@ class SmartPetManagerApp extends StatelessWidget {
     );
   }
 }
+
 class PetHomePage extends StatefulWidget {
   const PetHomePage({super.key});
 
@@ -203,18 +209,17 @@ class _PetHomePageState extends State<PetHomePage> {
         customSpecial: "Mina can catch the ball in the air!",
       ),
       Cat.kitten(
-        name: "Eva", 
+        name: "Eva",
         imageAsset: 'assets/images/eva.png',
         customSpecial: "Eva is sleeping on the keyboard.",
       ),
       Bird.parrot(
-        name: "Necmi", 
-        color: "Blue & White",
+        name: "Necmi",
         imageAsset: 'assets/images/necmi.png',
         customSpecial: "Necmi is swearing in Turkish!",
       ),
       Dog.rescue(
-        "Sherlock", 
+        "Sherlock",
         imageAsset: 'assets/images/kopke2.png',
       ),
       Dog(
@@ -223,13 +228,13 @@ class _PetHomePageState extends State<PetHomePage> {
         imageAsset: "assets/images/caliskankopek.jpeg",
         customSound: "Working on it",
         customFriendly: "don't touch me, don't talk to me",
-        customSpecial: "Engineer wants to drink yellow cola."
+        customSpecial: "Engineer wants to drink yellow cola.",
       ),
       Cat(
         name: "Doctor",
         age: 3,
         imageAsset: 'assets/images/doktorKedi.jpeg',
-        customSound: "drink water"
+        customSound: "drink water",
       ),
       Bird(
         name: "Captain",
@@ -243,13 +248,12 @@ class _PetHomePageState extends State<PetHomePage> {
         age: 1,
         imageAsset: "assets/images/KriminalKuslar.jpeg",
         customSound: "give me the money!",
-        customSpecial: "Criminal Birds is investigating a crime scene.",
+        customSpecial: "Criminal Birds are investigating a crime scene.",
       ),
       Cat(
         name: "Shocked",
         age: 6,
         imageAsset: "assets/images/saskinKedi.jpeg",
-        
       ),
       Dog(
         name: "Tourist Dogs",
@@ -264,7 +268,7 @@ class _PetHomePageState extends State<PetHomePage> {
         customSound: "Zorp~",
         customFriendly: "Telepathically projects friendship.",
         customSpecial: "Kryptonian is levitating.",
-      )
+      ),
     ];
   }
 
@@ -398,12 +402,16 @@ class PetCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(pet.info()),
             const SizedBox(height: 8),
-            // Artık metotları değil, doğrudan 'final' alanları okuyoruz.
-            Text('Sound: ${pet.sound}'),
+            // Artık soyut metotları çağırıyoruz (interface + abstraction)
+            Text('Sound: ${pet.makeSound()}'),
             const SizedBox(height: 8),
-            Text('Special: ${pet.specialAction}'),
+            Text('Special: ${pet.doSpecialAction()}'),
             const SizedBox(height: 8),
-            Text('Friendly: ${pet.friendlyBehavior}'),
+            Text('Friendly: ${pet.beFriendly()}'),
+            if (pet is Bird) ...[
+              const SizedBox(height: 8),
+              Text('Flight: ${(pet as Bird).fly()}'),
+            ],
           ],
         ),
       ),
