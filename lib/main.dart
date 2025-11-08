@@ -1,8 +1,3 @@
-// lib/main.dart
-// BIM493 Mobile Programming I – Assignment #2
-// Smart Pet Manager App in Flutter (uses local asset images)
-// GÜNCELLEME: Davranışlar artık Constructor (Kurucu Metot) üzerinden
-// "Dependency Injection" ile enjekte ediliyor.
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
