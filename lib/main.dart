@@ -222,8 +222,8 @@ class _PetHomePageState extends State<PetHomePage> {
         age: 4,
         imageAsset: "assets/images/caliskankopek.jpeg",
         customSound: "Working on it",
-        customFriendly: "dont touch me, dont talk to me",
-        customSpecial: "Engineer want to drink yellow cola."
+        customFriendly: "don't touch me, don't talk to me",
+        customSpecial: "Engineer wants to drink yellow cola."
       ),
       Cat(
         name: "Doctor",
@@ -255,7 +255,7 @@ class _PetHomePageState extends State<PetHomePage> {
         name: "Tourist Dogs",
         age: 4,
         imageAsset: "assets/images/TuristKopekler.jpeg",
-        customSpecial: "Tourist dogs is taking a selfie.",
+        customSpecial: "Tourist dogs are taking a selfie.",
       ),
       Cat(
         name: "kryptonian",
