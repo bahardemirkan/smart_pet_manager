@@ -227,19 +227,19 @@ class _PetHomePageState extends State<PetHomePage> {
               padding: const EdgeInsets.all(12),
               children: [
                 _buildPetExpansionTile(
-                  title: 'Köpekler',
+                  title: 'Dogs',
                   icon: FontAwesomeIcons.dog,
                   pets: dogs,
                 ),
                 const SizedBox(height: 10),
                 _buildPetExpansionTile(
-                  title: 'Kuşlar',
+                  title: 'Birds',
                   icon: FontAwesomeIcons.dove,
                   pets: birds,
                 ),
                 const SizedBox(height: 10),
                 _buildPetExpansionTile(
-                  title: 'Kediler',
+                  title: 'Cats',
                   icon: FontAwesomeIcons.cat,
                   pets: cats,
                 ),
